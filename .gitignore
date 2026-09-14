@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data folders (keep gitkeep files)
+data/01_raw/*
+!data/01_raw/.gitkeep
+data/02_intermediate/*
+!data/02_intermediate/.gitkeep
+data/03_primary/*
+!data/03_primary/.gitkeep
+data/04_feature_store/*
+!data/04_feature_store/.gitkeep
+data/*.csv
+data/*.parquet
+
+# Model artifacts
+models/*.joblib
+models/*.pkl
+models/*.onnx
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Logs & temporary files
+*.log
+.DS_Store
+.coverage
+htmlcov/
+.pytest_cache/
