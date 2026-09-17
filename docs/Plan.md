@@ -84,9 +84,9 @@ adge_proyecto/
 │   ├── 01_eda_limpieza.ipynb           # Carga, calidad de datos, nulos y gráficos exploratorios
 │   └── 02_modelado_predictivo.ipynb    # Entrenamiento, comparación de modelos y métricas
 ├── docs/
-│   ├── Informe_final.md         # Trabajo escrito formal para entrega
-│   ├── Plan_de_trabajo.md       # Este plan de trabajo y arquitectura
-│   └── Rubrica_del_proyecto.md  # Lineamientos del docente
+│   ├── Informe.md               # Trabajo escrito formal para entrega
+│   ├── Plan.md                  # Este plan de trabajo y arquitectura
+│   └── Rubrica.md               # Lineamientos del docente
 ├── requirements.txt         # Lista limpia de las librerías principales
 └── README.md                # Presentación general del proyecto y cómo correrlo
 ```
