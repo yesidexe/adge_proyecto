@@ -6,9 +6,9 @@ Plataforma de análisis de datos a gran escala y modelado predictivo para la det
 
 ## 📌 Documentación del Proyecto
 
-* 🏆 **[docs/Informe_final.md](file:///workspaces/adge_proyecto/docs/Informe_final.md)**: **Documento formal de entrega (40% de la nota)**. Desarrolla punto por punto las 12 secciones de la rúbrica del docente (Tema, Sector, Objetivos Bloom, 5V del Big Data, Análisis Estadístico, Modelado Matemático con fórmulas LaTeX, Resultados y Referencias APA/IEEE).
-* 🗺️ **[docs/Plan_de_trabajo.md](file:///workspaces/adge_proyecto/docs/Plan_de_trabajo.md)**: Planificación técnica, diseño del stack tecnológico y justificación metodológica.
-* 📋 **[docs/Rubrica_del_proyecto.md](file:///workspaces/adge_proyecto/docs/Rubrica_del_proyecto.md)**: Guía y lineamientos de evaluación entregados por el docente.
+* 🏆 **[docs/Informe_final.md](docs/Informe_final.md)**: **Documento formal de entrega (40% de la nota)**. Desarrolla punto por punto las 12 secciones de la rúbrica del docente (Tema, Sector, Objetivos Bloom, 5V del Big Data, Análisis Estadístico, Modelado Matemático con fórmulas LaTeX, Resultados y Referencias APA/IEEE).
+* 🗺️ **[docs/Plan_de_trabajo.md](docs/Plan_de_trabajo.md)**: Planificación técnica, diseño del stack tecnológico y justificación metodológica.
+* 📋 **[docs/Rubrica_del_proyecto.md](docs/Rubrica_del_proyecto.md)**: Guía y lineamientos de evaluación entregados por el docente.
 
 ---
 
