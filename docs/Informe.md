@@ -1,18 +1,11 @@
 # INFORME DE PROPUESTA TÉCNICA
 # Sistema Predictivo del Comportamiento del Usuario y Detección Temprana de Abandono (Churn) en Comercio Digital
 
-> **Asignatura:** Analítica de Datos y Big Data  
-> **Modalidad:** Propuesta Formal y Planificación de Proyecto  
-> **Ponderación:** 40% (Documento Escrito y Sustentación Técnica)  
-> **Fecha de Entrega:** 17 de Septiembre de 2026  
-
----
-
 ## Índice General de Contenidos
 
 1. [Tema](#1-tema)
 2. [Sector de Aplicación](#2-sector-de-aplicación)
-3. [Objetivos del Proyecto (Taxonomía de Bloom)](#3-objetivos-del-proyecto-taxonomía-de-bloom)
+3. [Objetivos del Proyecto](#3-objetivos-del-proyecto-taxonomía-de-bloom)
    * 3.1 [Objetivo General](#31-objetivo-general-nivel-bloom-crear--desarrollar)
    * 3.2 [Objetivos Específicos](#32-objetivos-específicos)
 4. [Origen de los Datos](#4-origen-de-los-datos)
@@ -59,31 +52,37 @@ La pérdida imprevista de clientes (*churn*) deteriora de forma directa el Valor
 
 ---
 
-## 3. Objetivos del Proyecto (Taxonomía de Bloom)
+## 3. Objetivos del Proyecto
 
 ### 3.1 Objetivo General *(Nivel Bloom: Crear / Desarrollar)*
-**Desarrollar** un modelo analítico predictivo de abandono de usuarios (**¿Qué?**), mediante la formulación de técnicas de minería de datos, análisis exploratorio univariado/bivariado, protocolos de imputación estadística y algoritmos de clasificación supervisada (**¿Cómo?**), con el fin de fundamentar estrategias proactivas y focalizadas de retención comercial en plataformas de comercio digital (**¿Para qué?**).
+**Desarrollar** un modelo analítico predictivo de abandono de usuarios, mediante la formulación de técnicas de minería de datos, análisis exploratorio univariado/bivariado, protocolos de imputación estadística y algoritmos de clasificación supervisada, con el fin de fundamentar estrategias proactivas y focalizadas de retención comercial en plataformas de comercio digital.
 
 ### 3.2 Objetivos Específicos ($OG = \sum OE$)
 
-1. **Procesar** el conjunto de datos transaccionales brutos aplicando técnicas sistemáticas de codificación categórica, auditoría de duplicados y tratamiento de valores nulos mediante imputación robusta por mediana, enmarcando el diseño bajo las 5V del Big Data. *(Nivel Bloom: Aplicar)*
-2. **Analizar** el comportamiento del cliente a través de estadística descriptiva, tablas de contingencia y matrices de correlación (evaluando variables de recencia, antigüedad, quejas y gasto) para aislar los factores determinantes en la deserción. *(Nivel Bloom: Analizar)*
-3. **Modelar** la probabilidad individual de deserción mediante el diseño e implementación comparativa de un clasificador lineal paramétrico (Regresión Logística con ponderación de clases) y un clasificador aditivo no paramétrico (XGBoost con optimización por gradiente). *(Nivel Bloom: Crear / Sintetizar)*
-4. **Evaluar** el rendimiento predictivo del sistema utilizando métricas de clasificación rigurosas (Sensibilidad/Recall, Precisión, F1-Score y área bajo la curva ROC-AUC), traduciendo los umbrales de decisión matemática en recomendaciones tácticas para la toma de decisiones empresariales. *(Nivel Bloom: Evaluar)*
+1. **Procesar** el conjunto de datos transaccionales brutos aplicando técnicas sistemáticas de codificación categórica, auditoría de duplicados y tratamiento de valores nulos mediante imputación robusta por mediana, enmarcando el diseño bajo las 5V del Big Data.
+2. **Analizar** el comportamiento del cliente a través de estadística descriptiva, tablas de contingencia y matrices de correlación (evaluando variables de recencia, antigüedad, quejas y gasto) para aislar los factores determinantes en la deserción.
+3. **Modelar** la probabilidad individual de deserción mediante el diseño e implementación comparativa de un clasificador lineal paramétrico (Regresión Logística con ponderación de clases) y un clasificador aditivo no paramétrico (XGBoost con optimización por gradiente).
+4. **Evaluar** el rendimiento predictivo del sistema utilizando métricas de clasificación rigurosas (Sensibilidad/Recall, Precisión, F1-Score y área bajo la curva ROC-AUC), traduciendo los umbrales de decisión matemática en recomendaciones tácticas para la toma de decisiones empresariales.
 
 ---
 
 ## 4. Origen de los Datos
 
-### 4.1 Fuente y Justificación del Dataset
-* **Tipo:** Datos secundarios estructurados de repositorio público abierto.
-* **Fuente Oficial:** Kaggle Repository (*E-Commerce Customer Churn Analysis and Prediction*).
-* **Volumen Muestral:** **5.630 perfiles de usuarios** únicos con historial de navegación, registros transaccionales, logística y soporte postventa.
-* **Variable Dependiente (Target):** `Churn` (Binaria: $1$ si el cliente abandonó la plataforma, $0$ si se mantiene activo).
-* **Condición de Desbalance:** Se anticipa una distribución asimétrica típica del mercado real (~83% retención vs ~17% abandono, relación ~5:1), lo cual justifica metodológicamente el uso de técnicas de compensación de clases en los algoritmos.
-* **Justificación de Selección:** Proporciona un equilibrio óptimo entre granularidad dimensional (20 variables representativas del negocio) y manejabilidad computacional en memoria local, permitiendo la reproducibilidad exacta de todos los análisis sin requerir clústeres distribuidos costosos en etapas iniciales.
+### 4.1 Estrategia de Selección y Datasets Candidatos
+La propuesta metodológica está diseñada con una arquitectura flexible y agnóstica a la fuente de datos, contemplando dos alternativas para el desarrollo del proyecto:
 
-### 4.2 Estructura y Diccionario de Variables
+* **Dataset Piloto / Base de Referencia Inicial (Prototipado Local):**
+  * *Fuente:* Kaggle Repository (*E-Commerce Customer Churn Analysis and Prediction*).
+  * *Volumen Muestral:* **5.630 perfiles de usuarios** únicos y 20 dimensiones analíticas.
+  * *Rol en el Proyecto:* Se adopta como base de diseño inicial, exploración y validación matemática de laboratorio. Su valor reside en que ya cuenta con la variable objetivo `Churn` etiquetada y atributos muy específicos de fidelización (`Complain`, `Tenure`, `CashbackAmount`, `SatisfactionScore`), permitiendo validar la lógica algorítmica sin requerir infraestructura distribuida en la fase temprana.
+  * *Condición de Desbalance:* Presenta una distribución asimétrica típica del comercio real (~83% retención vs ~17% abandono, relación ~5:1), lo cual justifica metodológicamente el uso de técnicas de compensación de clases en los algoritmos.
+
+* **Dataset Candidato de Escala Masiva (Ampliación / Migración a Gran Escala):**
+  * *Fuente:* Kaggle Repository (*Brazilian E-Commerce Public Dataset by Olist* - contemplado explícitamente en la guía del curso).
+  * *Volumen Muestral:* **~100.000 órdenes de compra** y más de 112.000 registros transaccionales reales.
+  * *Rol en el Proyecto:* Se establece como la alternativa directa de migración para la fase de implementación si se requiere someter el modelo a un orden de magnitud superior de datos. Permite cruzar tablas relacionales (clientes, geolocalización, reseñas de satisfacción, tiempos de entrega y métodos de pago) para construir un indicador de deserción basado en análisis RFM (Recencia, Frecuencia y Monetario) sobre transacciones auténticas de e-commerce.
+
+### 4.2 Estructura y Diccionario de Variables de Referencia (Dataset Piloto)
 
 | Variable | Tipo de Dato | Naturaleza | Rol en el Negocio |
 | :--- | :--- | :--- | :--- |
@@ -130,9 +129,9 @@ Para garantizar la integridad y reproducibilidad del proyecto, se planifica una 
 3. **Control de Fuga de Información (*Data Leakage*):** Cualquier transformación de escala (`StandardScaler`) o cálculo de parámetros se ajustará exclusivamente sobre los datos de entrenamiento (*Train*), aplicándose posteriormente por transferencia sobre los datos de evaluación (*Test*).
 
 ### 5.2 Tecnologías y Entorno de Desarrollo
-* **Lenguaje Principal:** Python (versión $\ge 3.10$).
+* **Lenguaje Principal:** Python.
 * **Entorno de Ejecución:** Entorno virtual aislado (`.venv`) y cuadernos interactivos en **JupyterLab** (`notebooks/01_eda_limpieza.ipynb` y `notebooks/02_modelado_predictivo.ipynb`).
-* **Librerías Nucleares:**
+* **Librerías:**
   * *Manipulación y cálculo:* `pandas`, `numpy`, `openpyxl`.
   * *Exploración visual:* `matplotlib`, `seaborn`.
   * *Modelado estadístico y Machine Learning:* `scikit-learn`, `xgboost`.
@@ -143,7 +142,9 @@ Para garantizar la integridad y reproducibilidad del proyecto, se planifica una 
 
 El proyecto se encuadra formalmente dentro de los principios rectores del Big Data:
 
-* **Volumen:** La muestra seleccionada comprende 5.630 usuarios y 20 dimensiones de análisis (más de 112.000 observaciones puntuales). Aunque el tamaño permite su cómputo en memoria local sin sobredimensionar la infraestructura, la formulación matemática vectorial y matricial de los algoritmos seleccionados garantiza escalabilidad hacia volúmenes de millones de registros mediante motores de computación distribuida (como PySpark) si el negocio lo demanda.
+* **Volumen (Perspectiva Crítica y Escalabilidad):**
+  * *Dimensión del Prototipo Inicial:* El dataset piloto seleccionado comprende 5.630 registros y 20 variables (~112.600 celdas de datos). Con honestidad técnica y rigor de ingeniería, este tamaño representa una muestra analítica de laboratorio (*"Small Data"*), idónea para experimentación local rápida sin sobrecostos de infraestructura en la nube.
+  * *Escalabilidad hacia Big Data Real:* En el comercio electrónico productivo, el volumen alcanza cientos de miles o millones de eventos diarios. Por ende, la propuesta contempla formalmente la migración hacia el dataset masivo de **Olist (~100.000 transacciones)** o repositorios corporativos. La formulación matemática vectorial y matricial de los algoritmos seleccionados (Regresión Logística y ensamble por gradiente en XGBoost) garantiza que el pipeline sea 100% extrapolable a motores de computación distribuida (como PySpark o Dask en clústeres) sin alterar la lógica del modelado.
 * **Velocidad:** En el comercio electrónico, las interacciones suceden a ritmos vertiginosos: clics, carritos abandonados, transacciones y reclamos ocurren en tiempo real. La arquitectura del sistema separa el entrenamiento periódico por lotes (*batch*) del cálculo de inferencia probabilística en línea, permitiendo consultar el riesgo de abandono de un usuario en milisegundos mediante funciones vectorizadas.
 * **Variedad:** El conjunto de datos presenta una notable diversidad tipológica: variables cuantitativas continuas (`DaySinceLastOrder`, `CashbackAmount`), discretas (`OrderCount`), variables cualitativas nominales (`PreferredPaymentMode`), binarias (`Complain`, `Gender`) y ordinales (`CityTier`, `SatisfactionScore`), exigiendo estrategias diferenciadas de codificación y preprocesamiento.
 * **Veracidad:** La calidad de los datos es la piedra angular del modelado. El plan contempla una política estricta para resolver imperfecciones:
@@ -244,8 +245,10 @@ Para que los resultados técnicos sean auditables y fácilmente interpretables p
 ## 10. Metodología de Evaluación y Resultados Esperados
 
 ### 10.1 Estrategia de Partición y Validación
-* **División Estratificada (Train/Test Split):** Se plantea una partición estratificada del conjunto de datos en una proporción **80% entrenamiento** ($N \approx 4.504$) y **20% prueba independiente** ($N \approx 1.126$).
-* **Garantía de Estratificación:** Se conservará rigurosamente el porcentaje original de desertores (~17%) en ambas particiones para evitar sesgos muestrales.
+* **División Estratificada (Train/Test Split):** Se plantea una partición estratificada del conjunto de datos en una proporción **80% entrenamiento** y **20% prueba independiente**.
+  * *En el Dataset Piloto ($N \approx 5.630$):* Corresponde a $N_{\text{train}} \approx 4.504$ registros y $N_{\text{test}} \approx 1.126$ registros.
+  * *En el Dataset Masivo Candidato ($N \approx 100.000$):* La misma partición representará $N_{\text{train}} \approx 80.000$ y $N_{\text{test}} \approx 20.000$ observaciones.
+* **Garantía de Estratificación:** Se conservará rigurosamente la proporción de desertores en ambas particiones para evitar sesgos muestrales.
 * **Aislamiento Técnico:** Ningún dato del conjunto de prueba intervendrá en la imputación de nulos, ni en la estandarización de escala (`StandardScaler`), garantizando una evaluación ciega y realista.
 
 ### 10.2 Métricas Clave y Criterios de Éxito del Negocio
@@ -281,8 +284,10 @@ La implementación planificada del modelo permitirá pasar de un esquema de rete
    * **Riesgo Bajo ($P(\text{churn}) < 0.40$):** Flujo habitual de comunicaciones comerciales.
 
 ### 11.2 Limitaciones Identificadas y Hoja de Ruta de Escalamiento
-* **Limitación Inicial:** El conjunto de datos recopilado es una agregación temporal por lotes. No registra la secuencia fina evento por evento dentro de una misma sesión de navegación.
-* **Hoja de Ruta hacia Big Data en Streaming:** Como visión a mediano y largo plazo, la lógica analítica desarrollada servirá como especificación funcional para desplegar un sistema en tiempo real utilizando arquitecturas de streaming (Apache Kafka + Apache Flink/Spark Streaming), permitiendo evaluar el riesgo de abandono durante la misma sesión de compra del usuario (por ejemplo, tras experimentar dos transacciones rechazadas consecutivas en la pasarela de pagos).
+* **Limitación Inicial del Muestreo:** El dataset piloto de 5.630 registros representa una muestra agregada de laboratorio con limitaciones para capturar micro-segmentos finos.
+* **Hoja de Ruta hacia Big Data Masivo y Streaming:**
+  1. *Fase de Escalamiento Muestral:* Migración del prototipo hacia el dataset de **Olist (~100.000 órdenes transaccionales)** o datasets tabulares a gran escala, enriqueciendo la ingeniería de características con variables de geolocalización, fletes logísticos y tiempos reales de entrega.
+  2. *Fase de Streaming:* Despliegue en tiempo real utilizando arquitecturas distribuidas (Apache Kafka + Spark Streaming) para evaluar el riesgo de abandono durante la misma sesión de compra del usuario (por ejemplo, tras experimentar dos transacciones rechazadas consecutivas en la pasarela de pagos).
 
 ---
 
@@ -295,3 +300,4 @@ La implementación planificada del modelo permitirá pasar de un esquema de rete
 5. **Zhu, B., Baesens, B., & Backiel, A.** (2018). *Benchmarking state-of-the-art techniques for customer churn prediction in telecom and retail*. Decision Support Systems, 107, 79–89. https://doi.org/10.1016/j.dss.2018.01.006
 6. **Géron, A.** (2022). *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow* (3rd ed.). O'Reilly Media.
 7. **Verma, A.** (2021). *E-Commerce Customer Churn Analysis and Prediction Dataset*. Kaggle Repository. https://www.kaggle.com/datasets/ankitverma2010/ecommerce-customer-churn-analysis-and-prediction
+8. **Olist & Kaggle.** (2018). *Brazilian E-Commerce Public Dataset by Olist*. Kaggle Repository. https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
