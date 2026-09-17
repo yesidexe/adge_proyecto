@@ -6,9 +6,9 @@ Plataforma de análisis de datos a gran escala y modelado predictivo para la det
 
 ## 📌 Documentación del Proyecto
 
-* 🏆 **[docs/Informe_final.md](docs/Informe_final.md)**: **Documento formal de entrega (40% de la nota)**. Desarrolla punto por punto las 12 secciones de la rúbrica del docente (Tema, Sector, Objetivos Bloom, 5V del Big Data, Análisis Estadístico, Modelado Matemático con fórmulas LaTeX, Resultados y Referencias APA/IEEE).
-* 🗺️ **[docs/Plan_de_trabajo.md](docs/Plan_de_trabajo.md)**: Planificación técnica, diseño del stack tecnológico y justificación metodológica.
-* 📋 **[docs/Rubrica_del_proyecto.md](docs/Rubrica_del_proyecto.md)**: Guía y lineamientos de evaluación entregados por el docente.
+* 🏆 **[Informe.md](docs/Informe.md)**: Este documento desarrolla punto por punto las 12 secciones de la rúbrica (Tema, Sector, Objetivos, 5V del Big Data, Análisis Estadístico, Modelado Matemático, Resultados y Referencias).
+* 🗺️ **[Plan.md](docs/Plan.md)**: Planificación técnica, diseño del stack tecnológico y justificación metodológica.
+* 📋 **[Rubrica.md](docs/Rubrica.md)**: Guía y lineamientos de evaluación entregados.
 
 ---
 
@@ -23,9 +23,9 @@ adge_proyecto/
 │   ├── 01_eda_limpieza.ipynb           # EDA, tratamiento de nulos, gráficos y correlaciones
 │   └── 02_modelado_predictivo.ipynb    # Feature Engineering, Regresión Logística vs XGBoost y ROC
 ├── docs/
-│   ├── Informe_final.md        # Trabajo escrito formal para entrega
-│   ├── Plan_de_trabajo.md      # Planificación y arquitectura del proyecto
-│   └── Rubrica_del_proyecto.md # Rúbrica y guía del docente
+│   ├── Informe.md        # Trabajo escrito formal sobre el proyecto
+│   ├── Plan.md      # Planificación y arquitectura del proyecto
+│   └── Rubrica.md # Rúbrica del proyecto
 ├── requirements.txt                    # Dependencias esenciales
 └── README.md                           # Presentación del proyecto
 ```
@@ -50,12 +50,39 @@ adge_proyecto/
 
 ---
 
-## 💻 Instrucciones para Reproducir el Proyecto
+## 💻 Instrucciones para ejecutar el código
 
-1. Activar el entorno virtual:
-   ```bash
-   source .venv/bin/activate
-   ```
-2. Abrir y ejecutar los notebooks secuencialmente:
-   * **`notebooks/01_eda_limpieza.ipynb`**
-   * **`notebooks/02_modelado_predictivo.ipynb`**
+### 1. Clonar el repositorio y acceder a la carpeta
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd adge_proyecto
+```
+
+### 2. Crear el entorno virtual
+Crea un entorno virtual aislado (nombrado `.venv`):
+```bash
+python3 -m venv .venv
+```
+
+### 3. Activar el entorno virtual
+```bash
+source .venv/bin/activate
+```
+
+### 4. Instalar las dependencias
+Con el entorno virtual ya activado, actualiza el gestor de paquetes e instala las librerías del proyecto (incluye Pandas, Scikit-learn, XGBoost, Matplotlib, Seaborn, JupyterLab e ipykernel):
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### 5. Iniciar Jupyter y ejecutar los notebooks
+Inicia la interfaz web de **JupyterLab**:
+```bash
+jupyter lab
+```
+*(También puedes usar `jupyter notebook` o abrir el proyecto en VS Code y seleccionar como kernel el intérprete de `.venv`).*
+
+Ejecuta los notebooks secuencialmente:
+1. **`notebooks/01_eda_limpieza.ipynb`**: Análisis exploratorio, auditoría de calidad, imputación de nulos y exportación de datos limpios.
+2. **`notebooks/02_modelado_predictivo.ipynb`**: Feature engineering, entrenamiento de Regresión Logística vs XGBoost y evaluación de métricas de negocio.
