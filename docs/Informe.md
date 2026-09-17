@@ -54,15 +54,15 @@ Cuando un comprador habitual se marcha, la tienda pierde ingresos recurrentes. P
 
 ## 3. Objetivos
 
-### 3.1 Objetivo General *(Nivel Bloom: Crear / Desarrollar)*
+### 3.1 Objetivo General
 **Desarrollar** un modelo analítico predictivo para la detección de abandono de usuarios (**¿Qué?**), aplicando técnicas de minería de datos, análisis exploratorio, imputación estadística y algoritmos de clasificación supervisada (**¿Cómo?**), con el fin de fundamentar estrategias comerciales de retención proactivas y focalizadas (**¿Para qué?**).
 
 ### 3.2 Objetivos Específicos ($OG = \sum OE$)
 
-1. **Procesar** el conjunto de datos transaccionales mediante limpieza de inconsistencias de texto, tratamiento de nulos por mediana y validación de duplicados, bajo el marco conceptual de las 5V del Big Data. *(Nivel Bloom: Aplicar)*
-2. **Analizar** el comportamiento del cliente mediante estadística descriptiva y matrices de correlación (evaluando antigüedad, recencia, quejas y gasto) para identificar los factores determinantes en la deserción. *(Nivel Bloom: Analizar)*
-3. **Modelar** la probabilidad individual de deserción comparando el entrenamiento de un clasificador lineal (Regresión Logística con balanceo de clases) y un ensamble de árboles por gradiente (XGBoost). *(Nivel Bloom: Crear / Sintetizar)*
-4. **Evaluar** el rendimiento del modelo mediante métricas de clasificación (priorizando la Sensibilidad o *Recall*, junto con ROC-AUC y F1-Score), traduciendo los hallazgos en recomendaciones para la toma de decisiones. *(Nivel Bloom: Evaluar)*
+1. **Procesar** el conjunto de datos transaccionales mediante limpieza de inconsistencias de texto, tratamiento de nulos por mediana y validación de duplicados, bajo el marco conceptual de las 5V del Big Data. 
+2. **Analizar** el comportamiento del cliente mediante estadística descriptiva y matrices de correlación (evaluando antigüedad, recencia, quejas y gasto) para identificar los factores determinantes en la deserción. 
+3. **Modelar** la probabilidad individual de deserción comparando el entrenamiento de un clasificador lineal (Regresión Logística con balanceo de clases) y un ensamble de árboles por gradiente (XGBoost).
+4. **Evaluar** el rendimiento del modelo mediante métricas de clasificación (priorizando la Sensibilidad o *Recall*, junto con ROC-AUC y F1-Score), traduciendo los hallazgos en recomendaciones para la toma de decisiones.
 
 ---
 
@@ -122,7 +122,7 @@ notebooks/ (01_eda_limpieza.ipynb y 02_modelado_predictivo.ipynb)
 3. **Aislamiento contra fuga de información (*Data Leakage*):** Las operaciones de escalado numérico (`StandardScaler`) se calculan únicamente sobre los datos de entrenamiento y se aplican después sobre el conjunto de prueba.
 
 ### 5.2 Herramientas de Trabajo
-* **Lenguaje:** Python dentro de un entorno virtual aislado (`.venv`).
+* **Lenguaje:** Python.
 * **Entorno interactivo:** Cuadernos de **JupyterLab** para la ejecución estructurada (`notebooks/01_eda_limpieza.ipynb` y `notebooks/02_modelado_predictivo.ipynb`).
 * **Librerías principales:** `pandas` y `numpy` para manipulación de tablas, `matplotlib` y `seaborn` para visualización gráfica, y `scikit-learn` junto con `xgboost` para el modelado analítico.
 
@@ -245,7 +245,7 @@ A partir del análisis del comportamiento del cliente, se derivan tres lineamien
 3. **Gestión analítica de la recencia:** Monitorear el incremento anormal en los días transcurridos desde la última compra para identificar oportunamente a los clientes que comienzan a mostrar signos de inactividad.
 
 ### 11.3 Escalamiento del Análisis
-* **Muestra de prueba como base:** Esta cohorte de prueba de aproximadamente 5.600 clientes sirve para validar la metodología y afinar los algoritmos localmente.
+* **Muestra de prueba como base:** Los datos de prueba de aproximadamente 5.600 clientes sirve para validar la metodología y afinar los algoritmos localmente.
 * **Proyección futura:** La formulación matricial y el diseño modular del código permiten que este mismo marco metodológico pueda aplicarse posteriormente sobre la base total de clientes o conectarse a las fuentes de datos completas de la organización.
 
 ---
