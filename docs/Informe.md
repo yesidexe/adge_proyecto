@@ -1,10 +1,10 @@
-# TRABAJO FINAL: ANALÍTICA DE DATOS A GRAN ESCALA
+# INFORME DE PROPUESTA TÉCNICA
 # Sistema Predictivo del Comportamiento del Usuario y Detección Temprana de Abandono (Churn) en Comercio Digital
 
-**Asignatura:** Análisis de Datos a Gran Escala / Big Data  
-**Modalidad:** Proyecto de Aplicación Práctica  
-**Ponderación:** 40% del Semestre (Trabajo Escrito + Sustentación)  
-**Fecha de Entrega:** Septiembre de 2026  
+> **Asignatura:** Analítica de Datos y Big Data  
+> **Modalidad:** Propuesta Formal y Planificación de Proyecto  
+> **Ponderación:** 40% (Documento Escrito y Sustentación Técnica)  
+> **Fecha de Entrega:** 17 de Septiembre de 2026  
 
 ---
 
@@ -13,26 +13,30 @@
 1. [Tema](#1-tema)
 2. [Sector de Aplicación](#2-sector-de-aplicación)
 3. [Objetivos del Proyecto (Taxonomía de Bloom)](#3-objetivos-del-proyecto-taxonomía-de-bloom)
-   * 3.1 Objetivo General
-   * 3.2 Objetivos Específicos
+   * 3.1 [Objetivo General](#31-objetivo-general-nivel-bloom-crear--desarrollar)
+   * 3.2 [Objetivos Específicos](#32-objetivos-específicos)
 4. [Origen de los Datos](#4-origen-de-los-datos)
-   * 4.1 Fuente y Características del Dataset
-   * 4.2 Diccionario y Estructura de Variables
-5. [Estrategia de Recolección de Datos](#5-estrategia-de-recolección-de-datos)
+   * 4.1 [Fuente y Justificación del Dataset](#41-fuente-y-justificación-del-dataset)
+   * 4.2 [Estructura y Diccionario de Variables](#42-estructura-y-diccionario-de-variables)
+5. [Estrategia de Recolección y Pipeline de Procesamiento](#5-estrategia-de-recolección-y-pipeline-de-procesamiento)
+   * 5.1 [Flujo de Ingesta y Desacoplamiento](#51-flujo-de-ingesta-y-desacoplamiento)
+   * 5.2 [Tecnologías y Entorno de Desarrollo](#52-tecnologías-y-entorno-de-desarrollo)
 6. [Análisis de las 5V del Big Data](#6-análisis-de-las-5v-del-big-data)
-7. [Análisis Estadístico](#7-análisis-estadístico)
-   * 7.1 Análisis Univariado
-   * 7.2 Análisis Bivariado y Correlaciones
+7. [Plan de Análisis Estadístico](#7-plan-de-análisis-estadístico)
+   * 7.1 [Análisis Univariado Proyectado](#71-análisis-univariado-proyectado)
+   * 7.2 [Análisis Bivariado y Contraste de Relaciones](#72-análisis-bivariado-y-contraste-de-relaciones)
 8. [Fundamentación y Modelado Matemático](#8-fundamentación-y-modelado-matemático)
-   * 8.1 Modelo Base: Regresión Logística Binaria
-   * 8.2 Función de Costo y Optimización (Log-Loss Ponderada)
-   * 8.3 Modelo Retador Avanzado: XGBoost Classifier
-9. [Visualización de Datos](#9-visualización-de-datos)
-10. [Análisis de Resultados y Métricas de Rendimiento](#10-análisis-de-resultados-y-métricas-de-rendimiento)
-    * 10.1 Evaluación Comparativa en Conjunto de Prueba
-    * 10.2 Análisis de la Matriz de Confusión
-    * 10.3 Variables más Influyentes en el Abandono
-11. [Conclusiones y Recomendaciones Operativas](#11-conclusiones-y-recomendaciones-operativas)
+   * 8.1 [Modelo Paramétrico Base: Regresión Logística Binaria](#81-modelo-paramétrico-base-regresión-logística-binaria)
+   * 8.2 [Función de Pérdida y Tratamiento del Desbalance (Log-Loss Ponderada)](#82-función-de-pérdida-y-tratamiento-del-desbalance-log-loss-ponderada)
+   * 8.3 [Modelo Retador de Ensamble: XGBoost Classifier](#83-modelo-retador-de-ensamble-xgboost-classifier)
+9. [Propuesta de Visualización de Datos](#9-propuesta-de-visualización-de-datos)
+10. [Metodología de Evaluación y Resultados Esperados](#10-metodología-de-evaluación-y-resultados-esperados)
+    * 10.1 [Estrategia de Partición y Validación](#101-estrategia-de-partición-y-validación)
+    * 10.2 [Métricas Clave y Criterios de Éxito del Negocio](#102-métricas-clave-y-criterios-de-éxito-del-negocio)
+    * 10.3 [Protocolo de Matriz de Confusión y Análisis de Costos](#103-protocolo-de-matriz-de-confusión-y-análisis-de-costos)
+11. [Conclusiones Esperadas e Impacto Operativo](#11-conclusiones-esperadas-e-impacto-operativo)
+    * 11.1 [Impacto Esperado en Marketing y Retención](#111-impacto-esperado-en-marketing-y-retención)
+    * 11.2 [Limitaciones Identificadas y Hoja de Ruta de Escalamiento](#112-limitaciones-identificadas-y-hoja-de-ruta-de-escalamiento)
 12. [Referencias Bibliográficas](#12-referencias-bibliográficas)
 
 ---
@@ -41,215 +45,253 @@
 
 **Análisis predictivo del comportamiento del usuario y detección temprana de abandono (*customer churn*) en plataformas de comercio digital mediante técnicas de minería de datos y algoritmos de clasificación supervisada.**
 
-El proyecto aborda la problemática de la fuga de clientes en entornos transaccionales de comercio electrónico, desarrollando un sistema capaz de identificar patrones de desafección y calcular la probabilidad individual de abandono antes de que el cliente cese definitivamente sus interacciones con la plataforma.
+El proyecto propone una solución integral de analítica predictiva para abordar la desafección de clientes en plataformas de comercio electrónico (*e-commerce*). A través de la modelación del comportamiento histórico del usuario (interacciones, quejas, recencia y frecuencia transaccional), se diseñará un sistema capaz de estimar la probabilidad individual de fuga de cada usuario antes de que cese sus compras, transformando datos transaccionales brutos en alertas comerciales tempranas.
 
 ---
 
 ## 2. Sector de Aplicación
 
-**Comercio Electrónico (*E-Commerce*) y Plataformas de Servicios Digitales.**
+**Comercio Electrónico (*E-Commerce*) y Plataformas Transaccionales de Servicios Digitales.**
 
-En este sector, la adquisición de nuevos compradores implica elevados costos de pauta digital y marketing (*Customer Acquisition Cost* - CAC). Estudios del sector demuestran que captar un cliente nuevo resulta entre **5 y 7 veces más costoso** que retener a un cliente actual. En consecuencia, maximizar el Valor del Tiempo de Vida del Cliente (*Customer Lifetime Value* - LTV) es la palanca principal de rentabilidad para cualquier negocio digital moderno.
+En el ecosistema del comercio electrónico, el Costo de Adquisición de Clientes (*Customer Acquisition Cost* - CAC) ha aumentado significativamente debido a la saturación de los canales publicitarios digitales. Diversos estudios de la industria confirman que adquirir un nuevo comprador cuesta entre **5 y 7 veces más** que fidelizar y retener a un cliente preexistente. 
+
+La pérdida imprevista de clientes (*churn*) deteriora de forma directa el Valor del Tiempo de Vida del Cliente (*Customer Lifetime Value* - LTV) y reduce la rentabilidad operativa. En este contexto, anticipar qué usuarios planean abandonar la tienda virtual permite desplegar campañas de rescate automatizadas y personalizadas, optimizando el presupuesto de mercadeo y salvaguardando el flujo de ingresos de la empresa.
 
 ---
 
 ## 3. Objetivos del Proyecto (Taxonomía de Bloom)
 
 ### 3.1 Objetivo General *(Nivel Bloom: Crear / Desarrollar)*
-**Desarrollar** un modelo analítico predictivo de abandono de usuarios (**¿Qué?**), mediante técnicas de minería de datos, análisis exploratorio, imputación estadística y algoritmos de clasificación supervisada (**¿Cómo?**), con el fin de fundamentar estrategias proactivas y focalizadas de retención comercial en plataformas de comercio digital (**¿Para qué?**).
+**Desarrollar** un modelo analítico predictivo de abandono de usuarios (**¿Qué?**), mediante la formulación de técnicas de minería de datos, análisis exploratorio univariado/bivariado, protocolos de imputación estadística y algoritmos de clasificación supervisada (**¿Cómo?**), con el fin de fundamentar estrategias proactivas y focalizadas de retención comercial en plataformas de comercio digital (**¿Para qué?**).
 
 ### 3.2 Objetivos Específicos ($OG = \sum OE$)
 
-1. **Procesar** el conjunto de datos transaccionales brutos aplicando técnicas de estandarización categórica, tratamiento de valores faltantes mediante imputación por mediana y validación técnica, enmarcado en las dimensiones del Big Data. *(Nivel Bloom: Aplicar)*
-2. **Analizar** el comportamiento del cliente mediante estadística descriptiva, tablas de contingencia y matrices de correlación (evaluando variables de antigüedad, recencia, quejas y gasto) para identificar los factores determinantes en la deserción. *(Nivel Bloom: Analizar)*
-3. **Modelar** la probabilidad individual de deserción mediante el entrenamiento de un clasificador lineal paramétrico (Regresión Logística con ponderación de clases) y un clasificador no paramétrico de ensamble por gradiente (XGBoost). *(Nivel Bloom: Crear / Sintetizar)*
-4. **Evaluar** el desempeño predictivo de los modelos utilizando métricas rigurosas (Sensibilidad/Recall, Exactitud, Precisión, F1-Score y área bajo la curva ROC-AUC), sintetizando los hallazgos en recomendaciones prácticas para la toma de decisiones empresariales. *(Nivel Bloom: Evaluar)*
+1. **Procesar** el conjunto de datos transaccionales brutos aplicando técnicas sistemáticas de codificación categórica, auditoría de duplicados y tratamiento de valores nulos mediante imputación robusta por mediana, enmarcando el diseño bajo las 5V del Big Data. *(Nivel Bloom: Aplicar)*
+2. **Analizar** el comportamiento del cliente a través de estadística descriptiva, tablas de contingencia y matrices de correlación (evaluando variables de recencia, antigüedad, quejas y gasto) para aislar los factores determinantes en la deserción. *(Nivel Bloom: Analizar)*
+3. **Modelar** la probabilidad individual de deserción mediante el diseño e implementación comparativa de un clasificador lineal paramétrico (Regresión Logística con ponderación de clases) y un clasificador aditivo no paramétrico (XGBoost con optimización por gradiente). *(Nivel Bloom: Crear / Sintetizar)*
+4. **Evaluar** el rendimiento predictivo del sistema utilizando métricas de clasificación rigurosas (Sensibilidad/Recall, Precisión, F1-Score y área bajo la curva ROC-AUC), traduciendo los umbrales de decisión matemática en recomendaciones tácticas para la toma de decisiones empresariales. *(Nivel Bloom: Evaluar)*
 
 ---
 
 ## 4. Origen de los Datos
 
-### 4.1 Fuente y Características del Dataset
-* **Tipo:** Datos secundarios de acceso abierto.
-* **Repositorio de Origen:** Kaggle Repository (*E-Commerce Customer Churn Analysis and Prediction*).
-* **Volumen:** **5.630 perfiles de usuarios** con historial de navegación, transacciones y soporte técnico.
-* **Variable Dependiente (Target):** `Churn` (Variable binaria: $1$ si el cliente abandonó el servicio en el último ciclo, $0$ si permanece activo).
-* **Distribución de Clases:**
-  * Clientes Retenidos (`0`): **4.682** registros (**83.16%**).
-  * Clientes Desertores (`1`): **948** registros (**16.84%**).
-  * Relación de desbalance moderado de aproximadamente $5:1$.
+### 4.1 Fuente y Justificación del Dataset
+* **Tipo:** Datos secundarios estructurados de repositorio público abierto.
+* **Fuente Oficial:** Kaggle Repository (*E-Commerce Customer Churn Analysis and Prediction*).
+* **Volumen Muestral:** **5.630 perfiles de usuarios** únicos con historial de navegación, registros transaccionales, logística y soporte postventa.
+* **Variable Dependiente (Target):** `Churn` (Binaria: $1$ si el cliente abandonó la plataforma, $0$ si se mantiene activo).
+* **Condición de Desbalance:** Se anticipa una distribución asimétrica típica del mercado real (~83% retención vs ~17% abandono, relación ~5:1), lo cual justifica metodológicamente el uso de técnicas de compensación de clases en los algoritmos.
+* **Justificación de Selección:** Proporciona un equilibrio óptimo entre granularidad dimensional (20 variables representativas del negocio) y manejabilidad computacional en memoria local, permitiendo la reproducibilidad exacta de todos los análisis sin requerir clústeres distribuidos costosos en etapas iniciales.
 
-### 4.2 Diccionario y Estructura de Variables
+### 4.2 Estructura y Diccionario de Variables
 
-| Variable | Tipo de Dato | Naturaleza | Descripción en el Negocio |
+| Variable | Tipo de Dato | Naturaleza | Rol en el Negocio |
 | :--- | :--- | :--- | :--- |
-| `CustomerID` | Numérico (Entero) | Identificador | Clave única de auditoría del usuario (excluida del modelado). |
-| `Churn` | Numérico (Binario) | Objetivo / Target | Estado del cliente: $1$ = Fuga / Deserción, $0$ = Retenido. |
-| `Tenure` | Numérico (Continuo) | Temporal | Meses de permanencia activa del usuario en la plataforma. |
-| `PreferredLoginDevice` | Texto (Nominal) | Comportamiento | Dispositivo de acceso preferente (`Mobile Phone`, `Computer`). |
-| `CityTier` | Numérico (Ordinal) | Demográfico | Clasificación socioeconómica/urbanística de la ciudad (1, 2, 3). |
-| `WarehouseToHome` | Numérico (Continuo) | Logístico | Distancia en kilómetros entre el almacén de despacho y el hogar. |
-| `PreferredPaymentMode` | Texto (Nominal) | Transaccional | Método de pago habitual (`Debit Card`, `Credit Card`, `UPI`, etc.). |
-| `Gender` | Texto (Binario) | Demográfico | Género registrado por el cliente (`Male`, `Female`). |
-| `HourSpendOnApp` | Numérico (Continuo) | Comportamiento | Horas promedio diarias de navegación en la app móvil o sitio web. |
-| `NumberOfDeviceRegistered`| Numérico (Discreto) | Comportamiento | Cantidad de dispositivos sincronizados a la cuenta. |
-| `PreferedOrderCat` | Texto (Nominal) | Comercial | Categoría predominante de compra (`Mobile Phone`, `Grocery`, etc.). |
-| `SatisfactionScore` | Numérico (Ordinal) | Percepción | Calificación subjetiva del servicio recibida por soporte (1 al 5). |
-| `MaritalStatus` | Texto (Nominal) | Demográfico | Estado civil del cliente (`Single`, `Married`, `Divorced`). |
-| `NumberOfAddress` | Numérico (Discreto) | Logístico | Total de direcciones de envío registradas por el usuario. |
-| `Complain` | Numérico (Binario) | Soporte | Registro de quejas o reclamos en el último mes (1 = Sí, 0 = No). |
-| `OrderAmountHikeFromlastYear`| Numérico (Continuo) | Financiero | Crecimiento porcentual del gasto respecto al año anterior. |
-| `CouponUsed` | Numérico (Discreto) | Comercial | Total de cupones promocionales redimidos. |
-| `OrderCount` | Numérico (Discreto) | Frecuencia | Total de órdenes de compra realizadas en la plataforma. |
-| `DaySinceLastOrder` | Numérico (Continuo) | Recencia | Días transcurridos desde la última transacción (recencia). |
-| `CashbackAmount` | Numérico (Continuo) | Fidelización | Promedio de reembolsos o cashback monetario acumulado. |
+| `CustomerID` | Numérico (Entero) | Identificador | Clave primaria de auditoría única por cliente (se excluirá del modelado predictivo). |
+| `Churn` | Numérico (Binario) | Variable Objetivo | Estado del usuario: $1$ = Desertor (*Churn*), $0$ = Activo / Retenido. |
+| `Tenure` | Numérico (Continuo) | Temporal | Meses acumulados de permanencia del cliente en la plataforma. |
+| `PreferredLoginDevice` | Texto (Nominal) | Canal | Dispositivo principal de acceso (`Mobile Phone`, `Phone`, `Computer`). |
+| `CityTier` | Numérico (Ordinal) | Demográfico | Nivel socioeconómico o de desarrollo urbano de la ciudad (1, 2, 3). |
+| `WarehouseToHome` | Numérico (Continuo) | Logístico | Distancia en kilómetros entre el centro de distribución y el domicilio del comprador. |
+| `PreferredPaymentMode` | Texto (Nominal) | Transaccional | Método de pago más utilizado (`Debit Card`, `Credit Card`, `UPI`, `Cash on Delivery`, `E-wallet`). |
+| `Gender` | Texto (Binario) | Demográfico | Género declarado por el cliente (`Male`, `Female`). |
+| `HourSpendOnApp` | Numérico (Continuo) | Interacción | Promedio de horas diarias de navegación dedicadas a la aplicación o sitio web. |
+| `NumberOfDeviceRegistered`| Numérico (Discreto) | Comportamiento | Número de dispositivos autorizados sincronizados con la cuenta del usuario. |
+| `PreferedOrderCat` | Texto (Nominal) | Comercial | Categoría preferente de compra (`Laptop & Accessory`, `Mobile Phone`, `Fashion`, `Grocery`, etc.). |
+| `SatisfactionScore` | Numérico (Ordinal) | Percepción | Calificación del servicio asignada por el usuario en encuestas (escala 1 a 5). |
+| `MaritalStatus` | Texto (Nominal) | Demográfico | Estado civil registrado (`Single`, `Married`, `Divorced`). |
+| `NumberOfAddress` | Numérico (Discreto) | Logístico | Total de direcciones de envío configuradas en la cuenta. |
+| `Complain` | Numérico (Binario) | Soporte | Registro formal de incidencias o reclamos en el último mes (1 = Sí, 0 = No). |
+| `OrderAmountHikeFromlastYear`| Numérico (Continuo) | Financiero | Crecimiento porcentual del valor de compras respecto al año previo. |
+| `CouponUsed` | Numérico (Discreto) | Comercial | Cantidad de cupones promocionales redimidos durante el periodo. |
+| `OrderCount` | Numérico (Discreto) | Frecuencia | Número total de órdenes de compra confirmadas en la plataforma. |
+| `DaySinceLastOrder` | Numérico (Continuo) | Recencia | Días transcurridos desde la última transacción confirmada. |
+| `CashbackAmount` | Numérico (Continuo) | Fidelización | Promedio monetario de reembolsos o devoluciones recibidas en su billetera digital. |
 
 ---
 
-## 5. Estrategia de Recolección y Procesamiento
+## 5. Estrategia de Recolección y Pipeline de Procesamiento
 
-La estrategia de extracción y carga adoptó un flujo estructurado y reproducible:
-1. **Extracción y Desacoplamiento:** Descarga secundaria desde el repositorio fuente y conversión programática de la hoja transaccional del archivo `.xlsx` a formato `.csv` delimitado, almacenado de forma inmutable en `data/raw/ecommerce_data.csv`.
-2. **Ingesta Programática en Python:** Consumo mediante la librería `pandas` con tipado automático y verificación de integridad.
-3. **Control de Calidad y Exportación:** Depuración de nulos, estandarización de categorías y exportación a la capa de datos procesados en `data/processed/ecommerce_cleaned.csv`.
+### 5.1 Flujo de Ingesta y Desacoplamiento
+Para garantizar la integridad y reproducibilidad del proyecto, se planifica una arquitectura por capas desacopladas:
+
+```text
+[Dataset Original Kaggle] 
+       │
+       ▼ (Extracción secundaria y desacoplamiento)
+[data/raw/ecommerce_data.csv] ── (Lectura inmutable en Python / Pandas)
+       │
+       ▼ (Auditoría de duplicados + Imputación por mediana + One-Hot Encoding)
+[data/processed/ecommerce_cleaned.csv] ── (Entrada para Modelado y Métricas)
+```
+
+1. **Capa Cruda (`data/raw/`):** Almacenará el archivo original en formato `.csv` delimitado, tratado como fuente de verdad inmutable (solo lectura).
+2. **Capa Procesada (`data/processed/`):** Contendrá el dataset depurado tras ejecutar el protocolo de calidad: imputación de valores nulos mediante la **mediana**, corrección de inconsistencias léxicas (ej. homologar `Phone` con `Mobile Phone`) y tipado estricto.
+3. **Control de Fuga de Información (*Data Leakage*):** Cualquier transformación de escala (`StandardScaler`) o cálculo de parámetros se ajustará exclusivamente sobre los datos de entrenamiento (*Train*), aplicándose posteriormente por transferencia sobre los datos de evaluación (*Test*).
+
+### 5.2 Tecnologías y Entorno de Desarrollo
+* **Lenguaje Principal:** Python (versión $\ge 3.10$).
+* **Entorno de Ejecución:** Entorno virtual aislado (`.venv`) y cuadernos interactivos en **JupyterLab** (`notebooks/01_eda_limpieza.ipynb` y `notebooks/02_modelado_predictivo.ipynb`).
+* **Librerías Nucleares:**
+  * *Manipulación y cálculo:* `pandas`, `numpy`, `openpyxl`.
+  * *Exploración visual:* `matplotlib`, `seaborn`.
+  * *Modelado estadístico y Machine Learning:* `scikit-learn`, `xgboost`.
 
 ---
 
 ## 6. Análisis de las 5V del Big Data
 
-* **Volumen:** Se procesan 5.630 perfiles de clientes con 20 dimensiones (más de 112.000 puntos de datos transaccionales). El diseño modular del pipeline permite escalar a clústeres distribuidos y datasets de millones de filas sin alterar la lógica de preprocesamiento.
-* **Velocidad:** En el comercio electrónico moderno, las transacciones, clics, quejas e inicios de sesión se producen de forma continua en tiempo real. La solución desacopla la fase de entrenamiento por lotes (*batch*) de la inferencia matemática rápida mediante vectores pre-escalados.
-* **Variedad:** El conjunto integra variables cuantitativas continuas (`CashbackAmount`, `DaySinceLastOrder`), discretas (`OrderCount`), variables cualitativas nominales (`PaymentMode`, `Category`) y ordinales (`SatisfactionScore`, `CityTier`).
-* **Veracidad:** Protocolos rigurosos de calidad de datos:
-  * Eliminación de ambigüedades categóricas (ej. unificar `Phone` y `Mobile Phone`; `CC` y `Credit Card`).
-  * Tratamiento de valores nulos mediante imputación por **mediana**, preservando la distribución y evitando el sesgo provocado por valores atípicos (*outliers*).
-  * Verificación de duplicidad por `CustomerID` (0 duplicados detectados).
-* **Valor:** Generación de un retorno económico directo para la empresa al predecir a tiempo el 90% de los clientes en riesgo de abandono, permitiendo activar promociones focalizadas y evitando la pérdida del LTV.
+El proyecto se encuadra formalmente dentro de los principios rectores del Big Data:
+
+* **Volumen:** La muestra seleccionada comprende 5.630 usuarios y 20 dimensiones de análisis (más de 112.000 observaciones puntuales). Aunque el tamaño permite su cómputo en memoria local sin sobredimensionar la infraestructura, la formulación matemática vectorial y matricial de los algoritmos seleccionados garantiza escalabilidad hacia volúmenes de millones de registros mediante motores de computación distribuida (como PySpark) si el negocio lo demanda.
+* **Velocidad:** En el comercio electrónico, las interacciones suceden a ritmos vertiginosos: clics, carritos abandonados, transacciones y reclamos ocurren en tiempo real. La arquitectura del sistema separa el entrenamiento periódico por lotes (*batch*) del cálculo de inferencia probabilística en línea, permitiendo consultar el riesgo de abandono de un usuario en milisegundos mediante funciones vectorizadas.
+* **Variedad:** El conjunto de datos presenta una notable diversidad tipológica: variables cuantitativas continuas (`DaySinceLastOrder`, `CashbackAmount`), discretas (`OrderCount`), variables cualitativas nominales (`PreferredPaymentMode`), binarias (`Complain`, `Gender`) y ordinales (`CityTier`, `SatisfactionScore`), exigiendo estrategias diferenciadas de codificación y preprocesamiento.
+* **Veracidad:** La calidad de los datos es la piedra angular del modelado. El plan contempla una política estricta para resolver imperfecciones:
+  * Eliminación de redundancias y errores tipográficos en variables de texto.
+  * Imputación de datos faltantes mediante **mediana**, preservando la robustez estadística ante distribuciones asimétricas y valores extremos.
+  * Auditoría de duplicados por identificador primario (`CustomerID`).
+* **Valor:** Es la dimensión definitiva del proyecto. El valor se materializa en la reducción directa de la tasa de fuga de clientes y en la protección del flujo de ingresos futuros. Al anticipar con alta probabilidad qué usuarios están en riesgo de abandono, el departamento de fidelización puede accionar incentivos dirigidos (cupones, atención prioritaria), maximizando el Retorno de la Inversión (ROI) de las campañas de marketing.
 
 ---
 
-## 7. Análisis Estadístico
+## 7. Plan de Análisis Estadístico
 
-### 7.1 Análisis Univariado
-Se calcularon las medidas de tendencia central y dispersión para las variables operativas:
-* **Antigüedad (`Tenure`):** Mediana de 9 meses. Presenta asimetría positiva; los clientes con menos de 3 meses representan la mayor masa de observaciones y el mayor riesgo de abandono.
-* **Recencia (`DaySinceLastOrder`):** Media de 4.5 días y mediana de 3 días. Existe una cola larga de usuarios inactivos que alcanza hasta 46 días sin compras.
-* **Gasto y Cashback (`CashbackAmount`):** Promedio de \$177.2, con rango intercuartílico entre \$145 y \$196.
+El análisis estadístico se estructurará en dos etapas complementarias orientadas a responder preguntas concretas del negocio:
 
-### 7.2 Análisis Bivariado y Factores de Riesgo
-* **Impacto del Reclamo Técnico (`Complain` vs. `Churn`):**  
-  Al cruzar la variable de quejas con el estado final del cliente, se encontró una de las relaciones estadísticas más contundentes:
-  * Clientes sin quejas registradas (`Complain = 0`): Tasa de abandono del **10.8%**.
-  * Clientes con quejas en el último mes (`Complain = 1`): Tasa de abandono del **31.7%**.  
-  * *Hallazgo:* Presentar una queja formal casi **triplica la propensión al abandono**, convirtiendo a esta variable en un disparador crítico (*red flag*).
-* **Relación Antigüedad vs. Churn:**  
-  El diagrama de cajas (*boxplot*) evidencia que la mediana de antigüedad en clientes que desertaron es notablemente inferior (3 meses) a la de clientes retenidos (10 meses). Superado el primer año, la probabilidad de fuga decae a menos del 5%.
-* **Matriz de Correlación Lineal:**  
-  La correlación de Pearson confirma que `Tenure` posee la correlación negativa más fuerte con `Churn` ($r \approx -0.34$), mientras que `Complain` exhibe la correlación positiva más alta ($r \approx +0.25$).
+### 7.1 Análisis Univariado Proyectado
+Se ejecutarán cálculos de estadística descriptiva para diagnosticar el comportamiento individual de cada variable:
+* **Medidas de Tendencia Central y Posición:** Cálculo sistemático de media, mediana, cuartiles ($Q_1, Q_2, Q_3$) y percentiles extremos ($P_{95}, P_{99}$) para variables operativas (`Tenure`, `DaySinceLastOrder`, `CashbackAmount`).
+* **Medidas de Dispersión y Forma:** Desviación estándar, Rango Intercuartílico ($IQR$) y coeficientes de asimetría (*skewness*) para detectar colas largas y sesgos distributivos en el comportamiento de compra.
+* **Distribución de Frecuencias Categóricas:** Análisis de proporciones para modalidades de pago, categorías preferidas y dispositivos de acceso.
+
+### 7.2 Análisis Bivariado y Contraste de Relaciones
+Esta fase tiene como objetivo validar qué factores empujan al usuario a la fuga:
+* **Análisis de Correlación Lineal y Monótona:** Cálculo de matrices de coeficientes de **Pearson** ($r$) y **Spearman** ($\rho$) entre todas las covariables numéricas y la variable objetivo `Churn`. Se espera corroborar una correlación inversa significativa entre la antigüedad (`Tenure`) y la deserción.
+* **Tablas de Contingencia y Pruebas Chi-Cuadrado ($\chi^2$):** Evaluación de la independencia estadística entre variables categóricas críticas y el estado de fuga:
+  * Contraste formal: ¿Existe dependencia estadística significativa entre el registro de una queja (`Complain = 1`) y la decisión de abandonar la plataforma (`Churn = 1`)?
+* **Comparación de Grupos mediante Diagramas de Cajas (*Boxplots*):** Comparación de las distribuciones de recencia (`DaySinceLastOrder`) y gasto (`CashbackAmount`) segmentadas entre clientes retenidos y desertores, para cuantificar visual y numéricamente la brecha de inactividad previa al abandono.
 
 ---
 
 ## 8. Fundamentación y Modelado Matemático
 
-### 8.1 Modelo Base: Regresión Logística Binaria Ponderada
-La probabilidad condicional de que un cliente abandone la empresa ($Y = 1$) dado su vector de características normalizado $X \in \mathbb{R}^p$ se modela mediante la función logística estándar (sigmoide):
+Para resolver el problema de clasificación binaria supervisada, se formula un esquema de doble modelado: un modelo lineal probabilístico explicativo (*baseline*) y un modelo no lineal de ensamble por gradiente para capturar relaciones complejas.
+
+### 8.1 Modelo Paramétrico Base: Regresión Logística Binaria
+Dado un vector de características observadas $X = (x_1, x_2, \dots, x_p)^T \in \mathbb{R}^p$ correspondiente a un cliente, se modela la probabilidad a posteriori de abandono $P(Y = 1 \mid X)$ mediante la función logística estándar (sigmoide):
+
 $$P(Y = 1 \mid X) = \sigma(z) = \frac{1}{1 + e^{-z}}$$
 
-Donde el argumento $z$ es la combinación lineal ponderada de las $p = 25$ características resultantes del preprocesamiento:
-$$z = \beta_0 + \sum_{j=1}^{p} \beta_j X_j = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_p X_p$$
+Donde el argumento logit $z$ corresponde a la combinación lineal de las covariables y sus respectivos coeficientes de ponderación:
 
-* $\beta_0$: Término independiente (intercepto).
-* $\beta_j$: Coeficiente de peso que determina la dirección y magnitud del impacto del predictor $X_j$. Un coeficiente positivo incrementa el logit de fuga ($\ln \frac{p}{1-p}$), mientras que uno negativo actúa como factor protector.
+$$z = \beta_0 + \sum_{j=1}^{p} \beta_j x_j = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \dots + \beta_p x_p$$
 
-### 8.2 Función de Costo y Optimización (Entropía Cruzada Ponderada)
-Para estimar los parámetros óptimos $\beta$, se minimiza la función de log-verosimilitud negativa (*Log-Loss*). Dado el desbalance de clases (83% vs 17%), una función de pérdida no balanceada tendería a ignorar a los desertores. Por ello, se introdujo una ponderación de clases inversamente proporcional a su frecuencia:
+* **Propiedad de interpretabilidad:** El logit de las probabilidades (*log-odds*) se expresa de forma lineal:
+  $$\ln\left(\frac{P(Y = 1 \mid X)}{1 - P(Y = 1 \mid X)}\right) = \beta_0 + \sum_{j=1}^{p} \beta_j x_j$$
+  Esto permite estimar el factor de riesgo relativo (*Odds Ratio* = $e^{\beta_j}$), identificando exactamente cuánto aumenta o disminuye la propensión de abandono ante el incremento unitario de cualquier predictor.
+
+### 8.2 Función de Pérdida y Tratamiento del Desbalance (Log-Loss Ponderada)
+Dado el desbalance inherente de clases (~83% retención vs ~17% abandono), una función de costo simétrica convencional provocaría que el algoritmo prediga sistemáticamente a favor de la clase mayoritaria. Para neutralizar este sesgo, se implementará la **Entropía Cruzada Binaria Ponderada por Frecuencia Inversa**:
+
 $$J(\beta) = -\frac{1}{N} \sum_{i=1}^{N} \left[ w_1 \cdot y^{(i)} \ln(\hat{y}^{(i)}) + w_0 \cdot (1 - y^{(i)}) \ln(1 - \hat{y}^{(i)}) \right]$$
 
-Donde los pesos se calculan como:
-$$w_1 = \frac{N}{2 \cdot N_{\text{churn}}} \approx 2.97, \quad w_0 = \frac{N}{2 \cdot N_{\text{retenido}}} \approx 0.60$$
-Esto penaliza con un costo ~5 veces mayor el error cuando el modelo predice erróneamente que un desertor permanecerá en la empresa.
+Donde $\hat{y}^{(i)} = \sigma(z^{(i)})$ y los pesos de penalización de cada clase se determinan en función de la muestra de entrenamiento:
 
-### 8.3 Modelo Retador Avanzado: XGBoost Classifier
-Para capturar fronteras de decisión no lineales y relaciones de interacción complejas (ej. cliente nuevo con queja no resuelta), se implementó un ensamble aditivo de árboles de decisión optimizados por gradiente:
+$$w_1 = \frac{N}{2 \cdot N_{\text{churn}}}, \quad w_0 = \frac{N}{2 \cdot N_{\text{retenido}}}$$
+
+Esta formulación penaliza severamente el error de clasificación cuando un cliente en fuga real ($y = 1$) no es detectado por el modelo.
+
+### 8.3 Modelo Retador de Ensamble: XGBoost Classifier
+Para modelar relaciones no lineales, efectos de umbral y patrones de interacción múltiple (ej. usuarios novatos con quejas y pedidos retrasados), se incorporará un ensamble aditivo de árboles de decisión mediante **eXtreme Gradient Boosting (XGBoost)**.
+
+La predicción combinada tras $M$ etapas aditivas está dada por:
+
 $$\hat{y}_i^{(M)} = \sum_{m=1}^{M} f_m(x_i), \quad f_m \in \mathcal{F}$$
 
-La optimización de XGBoost aproxima la pérdida mediante una expansión de Taylor de segundo orden:
+Donde cada función $f_m$ es un árbol de decisión independiente. La función objetivo a minimizar en cada iteración $m$ incorpora un término de pérdida convexa más un término explícito de penalización de complejidad estructural:
+
 $$\mathcal{L}^{(m)} \approx \sum_{i=1}^{N} \left[ g_i f_m(x_i) + \frac{1}{2} h_i f_m^2(x_i) \right] + \gamma T + \frac{1}{2} \lambda \sum_{j=1}^{T} w_j^2$$
-Donde $g_i$ y $h_i$ son el gradiente y el hessiano de la pérdida, $T$ es el número de hojas del árbol, y $\gamma, \lambda$ son términos de regularización estructural que previenen el sobreajuste (*overfitting*).
 
-El balanceo de clases en XGBoost se controló formalmente mediante:
-$$\text{scale\_pos\_weight} = \frac{N_{\text{retenido}}}{N_{\text{churn}}} = \frac{3.745}{759} \approx 4.94$$
-
----
-
-## 9. Visualización de Datos
-
-En el proyecto se generaron cuatro visualizaciones fundamentales para sustentar las decisiones:
-
-1. **Matriz de Confusión Comparada (Heatmap de Seaborn):** Permite contrastar de manera intuitiva los aciertos y fallos de la Regresión Logística frente a XGBoost, evaluando directamente cuántos desertores fueron salvados y cuántos pasaron inadvertidos.
-2. **Curva ROC Comparativa (Receiver Operating Characteristic):** Representa gráficamente la Tasa de Verdaderos Positivos frente a la Tasa de Falsos Positivos a través de todos los umbrales de decisión posibles, demostrando la superioridad global de XGBoost frente a la regresión y frente al azar ($AUC = 0.50$).
-3. **Mapa de Calor de Correlaciones (Heatmap):** Visualización bidimensional con escala cromática divergente (`coolwarm`) de todas las correlaciones numéricas contra la variable objetivo `Churn`.
-4. **Gráficos de Importancia de Variables (*Feature Importance* y Coeficientes $|\beta|$):** Gráficos de barras horizontales que clasifican los predictores con mayor ganancia de información en XGBoost y mayor magnitud en la Regresión Logística.
+Donde:
+* $g_i = \partial_{\hat{y}^{(m-1)}} l(y_i, \hat{y}^{(m-1)})$ es el gradiente de primer orden.
+* $h_i = \partial^2_{\hat{y}^{(m-1)}} l(y_i, \hat{y}^{(m-1)})$ es el hessiano de segundo orden.
+* $T$ representa el número de hojas terminales del árbol y $w_j$ los pesos asignados a cada hoja.
+* $\gamma$ y $\lambda$ son parámetros de regularización que impiden el sobreajuste (*overfitting*).
+* El desbalance se controlará directamente mediante el hiperparámetro de escala positiva:
+  $$\text{scale\_pos\_weight} = \frac{N_{\text{retenido}}}{N_{\text{churn}}}$$
 
 ---
 
-## 10. Análisis de Resultados y Métricas de Rendimiento
+## 9. Propuesta de Visualización de Datos
 
-### 10.1 Evaluación Comparativa en el Conjunto de Prueba
-La evaluación se efectuó estrictamente sobre los **1.126 clientes del conjunto de prueba independiente** (20% de los datos nunca observados durante el entrenamiento).
+Para que los resultados técnicos sean auditables y fácilmente interpretables por los líderes de negocio, se diseñará un panel gráfico compuesto por **cuatro visualizaciones clave**:
 
-| Métrica de Rendimiento | Regresión Logística (Baseline) | XGBoost Classifier (Ganador) | Interpretación Operativa |
-| :--- | :---: | :---: | :--- |
-| **Exactitud (*Accuracy*)** | 79.22% | **89.96%** | Porcentaje de clasificaciones correctas sobre el total de la base. |
-| **Sensibilidad (*Recall*)** | 84.74% | **90.00%** | **Capacidad de detectar a tiempo a los clientes que realmente desertaron.** |
-| **Precisión (*Precision*)** | 43.99% | **64.53%** | Porcentaje de acierto cuando el modelo emite una alerta de fuga. |
-| **F1-Score (Media Armónica)**| 57.91% | **75.16%** | Balance armónico global entre precisión y sensibilidad. |
-| **Capacidad Discriminativa (*ROC-AUC*)**| 88.52% | **95.52%** | Capacidad del modelo de asignar mayor probabilidad de riesgo a un desertor. |
-
-### 10.2 Análisis de la Matriz de Confusión (XGBoost en Test)
-Sobre los 1.126 clientes del set de prueba:
-* **Verdaderos Positivos ($TP = 171$):** Clientes que iban a desertar y fueron detectados exitosamente a tiempo para intervenir comercialmente.
-* **Falsos Negativos ($FN = 19$):** Clientes que desertaron pero el modelo no logró predecir (solo el 10% de error de escape).
-* **Verdaderos Negativos ($TN = 842$):** Clientes fieles clasificados correctamente como estables.
-* **Falsos Positivos ($FP = 94$):** Clientes que no iban a desertar pero fueron catalogados como en riesgo (falsas alarmas con bajo costo de negocio).
-
-### 10.3 Variables más Influyentes en la Deserción
-El ranking de importancia obtenido por ganancia en XGBoost y magnitud de coeficientes en Regresión Logística señala los 5 factores dominantes:
-1. **Antigüedad en la Plataforma (`Tenure` - Importancia: 18.18%):** Es el factor protector principal. Los usuarios novatos son los más susceptibles a abandonar tras una mala primera experiencia.
-2. **Incidencia de Quejas (`Complain` - Importancia: 7.22%):** Factor acelerador de fuga número 1.
-3. **Categoría de Compra (`Laptop & Accessory` - Importancia: 6.14%):** Clientes que adquieren tecnología de alto valor presentan dinámicas de retención diferenciadas frente a moda o consumo diario.
-4. **Estado Civil (`MaritalStatus_Single` - Importancia: 5.40%):** Los clientes solteros presentan una volatilidad y propensión de rotación significativamente mayor que los clientes casados.
-5. **Monto de Cashback (`CashbackAmount` - Importancia: 5.02%):** Los programas de recompensas y reembolsos actúan como un estabilizador clave de la fidelidad del cliente.
+1. **Matriz de Confusión Comparada (Heatmaps interactivos):**
+   * *Propósito:* Cuantificar de forma visual e inequívoca el número exacto de aciertos y errores en el conjunto de prueba (Verdaderos Positivos, Falsos Negativos, Verdaderos Negativos y Falsos Positivos).
+   * *Aporte al negocio:* Permite a la gerencia auditar cuántos clientes desertores se lograrían salvar y cuál es la tasa de falsas alarmas que asumiría el equipo comercial.
+2. **Curva ROC Comparativa (Receiver Operating Characteristic) y Área Bajo la Curva (AUC):**
+   * *Propósito:* Graficar la Tasa de Verdaderos Positivos frente a la Tasa de Falsos Positivos a través de todos los umbrales de probabilidad posibles ($c \in [0, 1]$), contrastando la Regresión Logística frente a XGBoost y contra una referencia aleatoria ($AUC = 0.50$).
+   * *Aporte al negocio:* Proporciona una medida independiente del umbral sobre la capacidad discriminativa intrínseca del sistema.
+3. **Mapa de Calor de Correlaciones (Heatmap Multivariado):**
+   * *Propósito:* Proyectar visualmente una cuadrícula con gradiente de color divergente que exhiba los coeficientes de correlación de todas las covariables numéricas contra `Churn`.
+   * *Aporte al negocio:* Diagnosticar rápidamente multicolinealidad entre variables y validar visualmente los predictores con mayor fuerza de asociación.
+4. **Gráfico de Importancia de Variables (*Feature Importance* y Coeficientes $|\beta|$):**
+   * *Propósito:* Diagrama de barras horizontales ordenado jerárquicamente que destaque los factores de mayor ganancia de información (*information gain*) en XGBoost y la magnitud de impacto en la Regresión Logística.
+   * *Aporte al negocio:* Explicar con transparencia **por qué** un cliente abandona la plataforma (identificando disparadores como quejas o inactividad prolongada).
 
 ---
 
-## 11. Conclusiones y Recomendaciones
+## 10. Metodología de Evaluación y Resultados Esperados
 
-### 11.1 Conclusiones Técnicas y Metodológicas
-1. **Viabilidad y Superioridad Predictiva:** El modelo XGBoost Classifier demostró ser plenamente viable y altamente efectivo para operar como un sistema de alerta temprana, alcanzando una sensibilidad del **90.00%** y un **ROC-AUC del 95.52%**, superando ampliamente el baseline de la Regresión Logística (88.52%).
-2. **Mitigación Exitosa del Desbalance:** La calibración del hiperparámetro `scale_pos_weight = 4.94` en XGBoost y `class_weight='balanced'` en Regresión Logística evitó que los algoritmos se sesgaran hacia la clase mayoritaria (83% retenidos), garantizando que solo se escaparan 19 de cada 190 clientes en fuga.
-3. **Rigor contra la Fuga de Información:** La separación rigurosa de datos previa al escalado (`StandardScaler` ajustado únicamente en `train`) asegura que el modelo posee alta capacidad de generalización y no sufrirá degradación inesperada en un entorno de producción real.
+### 10.1 Estrategia de Partición y Validación
+* **División Estratificada (Train/Test Split):** Se plantea una partición estratificada del conjunto de datos en una proporción **80% entrenamiento** ($N \approx 4.504$) y **20% prueba independiente** ($N \approx 1.126$).
+* **Garantía de Estratificación:** Se conservará rigurosamente el porcentaje original de desertores (~17%) en ambas particiones para evitar sesgos muestrales.
+* **Aislamiento Técnico:** Ningún dato del conjunto de prueba intervendrá en la imputación de nulos, ni en la estandarización de escala (`StandardScaler`), garantizando una evaluación ciega y realista.
 
-### 11.2 Recomendaciones Operativas para el Negocio
-1. **Protocolo Inmediato de Retención por Quejas (SLA < 24h):** Toda queja registrada por un usuario con menos de 6 meses de antigüedad debe detonar una alerta roja en el CRM de soporte, asignando un agente sénior con facultad para emitir compensaciones monetarias antes de que el usuario decida migrar a la competencia.
-2. **Campañas Automatizadas por Recencia:** Establecer disparadores (*triggers*) de marketing automático cuando el indicador `DaySinceLastOrder` supere los 10 días respecto al ciclo habitual de compra del usuario, ofreciendo cupones dinámicos de envío gratuito o cashback en su categoría preferida.
-3. **Segmentación Estratégica por Umbral de Riesgo:**
-   * **Riesgo Crítico ($P(\text{churn}) \ge 0.70$):** Intervención de alto impacto (contacto personalizado, descuentos sustanciales).
-   * **Riesgo Moderado ($0.40 \le P(\text{churn}) < 0.70$):** Notificaciones push de engagement, recomendaciones de catálogo y encuestas breves de satisfacción.
-   * **Riesgo Bajo ($P(\text{churn}) < 0.40$):** Operación estándar sin desgaste en presupuesto de retención.
+### 10.2 Métricas Clave y Criterios de Éxito del Negocio
+A diferencia de los problemas de clasificación balanceados donde la Exactitud (*Accuracy*) es suficiente, en la predicción de churn esta métrica puede ser engañosa (un modelo trivial que prediga que "nadie se va" tendría un 83% de exactitud pero sería completamente inútil para el negocio).
 
-### 11.3 Limitaciones y Oportunidades de Escalamiento
-* **Limitación:** El dataset actual representa una fotografía histórica agregada de comportamiento mensual.
-* **Oportunidad:** Escalar el pipeline a un motor de procesamiento en streaming (como Apache Kafka o Spark Streaming) para capturar en tiempo real eventos granulares de sesión (ej. carritos abandonados consecutivamente o errores en la pasarela de pagos) y recalcular el score de riesgo de forma instantánea.
+Por ende, los criterios de evaluación y éxito metodológico se establecen en torno a:
+
+| Métrica | Definición Matemática | Relevancia en el Negocio | Umbral Mínimo Esperado |
+| :--- | :---: | :--- | :---: |
+| **Sensibilidad (*Recall*)** | $\frac{TP}{TP + FN}$ | **Métrica Prioritaria.** Mide el porcentaje de clientes que realmente desertaron y que el modelo fue capaz de detectar a tiempo. Minimiza los Falsos Negativos (fugas no detectadas). | **$\ge 85.0\%$** |
+| **Capacidad Discriminativa (*ROC-AUC*)** | $\int_0^1 \text{TPR}(FPR^{-1}(t)) \, dt$ | Capacidad global del clasificador para ordenar a los clientes asignando mayores probabilidades de riesgo a quienes verdaderamente desertarán. | **$\ge 88.0\%$** |
+| **Puntaje F1 (*F1-Score*)** | $2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$ | Media armónica entre la precisión y la exhaustividad, garantizando un balance operativo adecuado. | **$\ge 70.0\%$** |
+| **Precisión (*Precision*)** | $\frac{TP}{TP + FP}$ | Porcentaje de acierto real cuando el modelo dispara una alerta de abandono, evitando el desgaste de recursos en falsas alarmas. | $\ge 55.0\%$ |
+
+### 10.3 Protocolo de Matriz de Confusión y Análisis de Costos
+La matriz de confusión se auditará bajo una matriz de costo asimétrico empresarial:
+* **Costo del Falso Negativo ($FN$ - Cliente que se fuga sin ser detectado):** Máximo costo financiero. La empresa pierde el LTV del cliente, su margen transaccional recurrente y el costo histórico de haberlo adquirido.
+* **Costo del Falso Positivo ($FP$ - Cliente fidelizado que recibe una alerta):** Costo financiero marginal. Se traduce únicamente en el costo menor de enviarle un cupón o correo de fidelización que de todas formas fortalece su relación con la marca.
+* *Criterio de decisión:* Se priorizará deliberadamente la **Sensibilidad** sobre la Precisión pura, calibrando el umbral de decisión ($c$) para tolerar falsos positivos con tal de acorralar y minimizar los falsos negativos.
 
 ---
 
-## 12. Referencias Bibliográficas (Formato IEEE / APA)
+## 11. Conclusiones Esperadas e Impacto Operativo
+
+### 11.1 Impacto Esperado en Marketing y Retención
+La implementación planificada del modelo permitirá pasar de un esquema de retención reactivo (cuando el usuario ya cerró su cuenta) a una **estrategia de retención proactiva y automatizada**:
+
+1. **Protocolo Inmediato ante Incidencias Técnicas:** Si el análisis confirma que las quejas (`Complain = 1`) y la baja antigüedad (`Tenure`) multiplican la probabilidad de fuga, se implementará una regla en el CRM: cualquier cliente con menos de 6 meses que radique una queja activará una alerta roja prioritaria (SLA de respuesta menor a 24 horas y oferta de compensación inmediata).
+2. **Disparadores Automatizados por Recencia:** Programar campañas automáticas en la plataforma de correo/notificaciones cuando la variable `DaySinceLastOrder` se desvíe del patrón habitual del cliente, ofreciendo incentivos de envío gratis o puntos de fidelidad.
+3. **Segmentación Estratégica por Niveles de Riesgo:**
+   * **Riesgo Alto ($P(\text{churn}) \ge 0.70$):** Asignación de ejecutivos de cuenta, descuentos especiales agresivos y llamadas directas de soporte.
+   * **Riesgo Moderado ($0.40 \le P(\text{churn}) < 0.70$):** Recomendaciones algorítmicas de productos basadas en su historial y beneficios de cashback.
+   * **Riesgo Bajo ($P(\text{churn}) < 0.40$):** Flujo habitual de comunicaciones comerciales.
+
+### 11.2 Limitaciones Identificadas y Hoja de Ruta de Escalamiento
+* **Limitación Inicial:** El conjunto de datos recopilado es una agregación temporal por lotes. No registra la secuencia fina evento por evento dentro de una misma sesión de navegación.
+* **Hoja de Ruta hacia Big Data en Streaming:** Como visión a mediano y largo plazo, la lógica analítica desarrollada servirá como especificación funcional para desplegar un sistema en tiempo real utilizando arquitecturas de streaming (Apache Kafka + Apache Flink/Spark Streaming), permitiendo evaluar el riesgo de abandono durante la misma sesión de compra del usuario (por ejemplo, tras experimentar dos transacciones rechazadas consecutivas en la pasarela de pagos).
+
+---
+
+## 12. Referencias Bibliográficas
 
 1. **Chen, T., & Guestrin, C.** (2016). *XGBoost: A Scalable Tree Boosting System*. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (pp. 785–794). ACM. https://doi.org/10.1145/2939672.2939785
-2. **Hastie, T., Tibshirani, R., & Friedman, J.** (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer Series in Statistics. Springer New York.
-3. **Verbeke, W., Martens, D., Mues, C., & Baesens, B.** (2012). *Building comprehensible customer churn prediction models with advanced rule induction techniques*. IEEE Transactions on Knowledge and Data Engineering, 24(12), 2100–2113. https://doi.org/10.1109/TKDE.2011.177
-4. **Provost, F., & Fawcett, T.** (2013). *Data Science for Business: What You Need to Know about Data Mining and Data-Analytic Thinking*. O'Reilly Media.
-5. **Geron, A.** (2022). *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow* (3rd ed.). O'Reilly Media.
-6. **Zhu, B., Baesens, B., & Backiel, A.** (2018). *Benchmarking state-of-the-art techniques for customer churn prediction in telecom and retail*. Decision Support Systems, 107, 79–89. https://doi.org/10.1016/j.dss.2018.01.006
+2. **Hastie, T., Tibshirani, R., & Friedman, J.** (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer Series in Statistics. Springer New York. https://doi.org/10.1007/978-0-387-84858-7
+3. **Provost, F., & Fawcett, T.** (2013). *Data Science for Business: What You Need to Know about Data Mining and Data-Analytic Thinking*. O'Reilly Media.
+4. **Verbeke, W., Martens, D., Mues, C., & Baesens, B.** (2012). *Building comprehensible customer churn prediction models with advanced rule induction techniques*. IEEE Transactions on Knowledge and Data Engineering, 24(12), 2100–2113. https://doi.org/10.1109/TKDE.2011.177
+5. **Zhu, B., Baesens, B., & Backiel, A.** (2018). *Benchmarking state-of-the-art techniques for customer churn prediction in telecom and retail*. Decision Support Systems, 107, 79–89. https://doi.org/10.1016/j.dss.2018.01.006
+6. **Géron, A.** (2022). *Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow* (3rd ed.). O'Reilly Media.
 7. **Verma, A.** (2021). *E-Commerce Customer Churn Analysis and Prediction Dataset*. Kaggle Repository. https://www.kaggle.com/datasets/ankitverma2010/ecommerce-customer-churn-analysis-and-prediction

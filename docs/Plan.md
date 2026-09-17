@@ -1,10 +1,5 @@
 # Plan de Proyecto: Detección y Predicción de Abandono de Clientes (Customer Churn Analytics)
 
-> **Documento de Planificación y Arquitectura Técnica**  
-> **Área:** Análisis de Datos, Machine Learning y Retención de Clientes  
-> **Sector:** Comercio Electrónico (*E-Commerce*)  
-> **Enfoque:** Práctico, modular y reproducible con Python estándar (sin sobreingeniería)
-
 ---
 
 ## 1. Contexto y Problema del Negocio
