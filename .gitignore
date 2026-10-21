@@ -15,8 +15,8 @@ data/04_feature_store/*
 data/*.csv
 data/*.parquet
 
-# Model artifacts
-models/*.joblib
+# Model artifacts (los .joblib finales de models/ SI se versionan: forman parte del entregable)
+*.egg-info/
 models/*.pkl
 models/*.onnx
 
@@ -30,6 +30,12 @@ models/*.onnx
 env/
 venv/
 ENV/
+
+# Agente Claude Code y Wiki Obsidian (SOLO LOCAL, no subir a produccion)
+CLAUDE.md
+.claude/
+wiki/
+.obsidian/
 
 # Logs & temporary files
 *.log

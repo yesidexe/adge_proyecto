@@ -26,6 +26,8 @@
     * 10.1 [Estrategia de Validación (Train/Test)](#101-estrategia-de-validación-traintest)
     * 10.2 [Métricas de Rendimiento Clave](#102-métricas-de-rendimiento-clave)
     * 10.3 [Criterio de Evaluación en la Matriz de Confusión](#103-criterio-de-evaluación-en-la-matriz-de-confusión)
+    * 10.4 [Resultados Obtenidos](#104-resultados-obtenidos)
+    * 10.5 [Segmentación de Clientes](#105-segmentación-de-clientes)
 11. [Conclusiones](#11-conclusiones)
     * 11.1 [Viabilidad Técnica y Aporte Metodológico](#111-viabilidad-técnica-y-aporte-metodológico)
     * 11.2 [Recomendaciones para la Toma de Decisiones](#112-recomendaciones-para-la-toma-de-decisiones)
@@ -119,12 +121,14 @@ notebooks/ (01_eda_limpieza.ipynb y 02_modelado_predictivo.ipynb)
 
 1. **Capa cruda (`data/raw/`):** Almacena el archivo CSV descargado de la fuente. Permanece intacto como punto de respaldo y auditoría.
 2. **Capa procesada (`data/processed/`):** Guarda el dataset resultante tras la estandarización de categorías de texto (ej. unificar `Phone` con `Mobile Phone`) y la imputación de nulos mediante la **mediana**, preservando la estabilidad estadística ante valores extremos.
-3. **Aislamiento contra fuga de información (*Data Leakage*):** Las operaciones de escalado numérico (`StandardScaler`) se calculan únicamente sobre los datos de entrenamiento y se aplican después sobre el conjunto de prueba.
+3. **Aislamiento contra fuga de información (*Data Leakage*):** En el pipeline reproducible (`src/churn/`) la imputación por mediana, el escalado numérico (`StandardScaler`) y la codificación One-Hot se ajustan únicamente con los datos de entrenamiento —dentro de un `Pipeline` de scikit-learn, también en cada partición de la validación cruzada— y después se aplican al conjunto de prueba. En el notebook `01_eda_limpieza.ipynb` la mediana se calcula sobre todo el dataset antes de dividir los datos; por eso las cifras del notebook 02 difieren levemente de las del pipeline reproducible (ver sección 10.4).
+4. **Capa de código y artefactos:** El paquete `src/churn/` automatiza el flujo completo (`python -m churn.train`) y genera el modelo entrenado (`models/`), el reporte de entrenamiento con métricas y gráficos (`reports/`) y los datasets derivados (`data/processed/test_predictions.csv` y `data/processed/customer_segments.csv`).
 
 ### 5.2 Herramientas de Trabajo
 * **Lenguaje:** Python.
-* **Entorno interactivo:** Cuadernos de **JupyterLab** para la ejecución estructurada (`notebooks/01_eda_limpieza.ipynb` y `notebooks/02_modelado_predictivo.ipynb`).
+* **Entorno interactivo:** Cuadernos de **JupyterLab** para la ejecución estructurada (`notebooks/01_eda_limpieza.ipynb`, `notebooks/02_modelado_predictivo.ipynb` y `notebooks/03_pipeline_reproducible.ipynb`).
 * **Librerías principales:** `pandas` y `numpy` para manipulación de tablas, `matplotlib` y `seaborn` para visualización gráfica, y `scikit-learn` junto con `xgboost` para el modelado analítico.
+* **Código reproducible:** paquete Python `churn` (`src/churn/`) con pruebas automáticas (`pytest`, 45 pruebas, ~98 % de cobertura) y `joblib` para guardar el modelo entrenado.
 
 ---
 
@@ -229,20 +233,78 @@ Las decisiones analíticas se orientan bajo una perspectiva de costos asimétric
 * **Falso Positivo (cliente que no se iba pero recibe una alerta):** Tiene un impacto menor; solo representa el costo de enviarle un beneficio o comunicación comercial.
 * *Criterio:* Se prioriza la **Sensibilidad** sobre la precisión pura, buscando reducir al mínimo los clientes desertores inadvertidos.
 
+### 10.4 Resultados Obtenidos
+
+Los resultados provienen del pipeline reproducible (`python -m churn.train`; detalle completo en `reports/training_report.md` y `notebooks/03_pipeline_reproducible.ipynb`). El conjunto de prueba contiene **1.126 clientes, 190 de ellos desertores** (16.87 %); el conjunto de entrenamiento, 4.504 clientes.
+
+**Desempeño en el conjunto de prueba**
+
+| Métrica | Meta | Regresión Logística | XGBoost |
+| :--- | :---: | :---: | :---: |
+| **Sensibilidad (*Recall*)** | $\ge 85.0\%$ | 84.74 % ❌ | **90.53 %** ✅ |
+| **ROC-AUC** | $\ge 88.0\%$ | 88.51 % ✅ | **95.65 %** ✅ |
+| **F1-Score** | $\ge 70.0\%$ | 57.91 % ❌ | **74.95 %** ✅ |
+| **Precisión** | $\ge 55.0\%$ | 43.99 % ❌ | **63.94 %** ✅ |
+| Exactitud (*Accuracy*) | — | 79.22 % | 89.79 % |
+
+**Matriz de confusión**
+
+| | Detectados como fuga (TP) | Fugas no detectadas (FN) | Falsas alarmas (FP) | Retenidos correctos (TN) |
+| :--- | :---: | :---: | :---: | :---: |
+| Regresión Logística | 161 | 29 | 205 | 731 |
+| **XGBoost** | **172** | **18** | **97** | **839** |
+
+XGBoost detecta 172 de los 190 clientes que realmente abandonaron y deja escapar solo 18, con 97 falsas alarmas (frente a 205 de la regresión logística). Cumple las cuatro metas de la tabla 10.2; la regresión logística solo cumple la de ROC-AUC y queda a 0.26 puntos de la meta de Recall.
+
+![Curvas ROC](../reports/figures/roc_curves.png)
+![Matrices de confusión](../reports/figures/confusion_matrices.png)
+
+**Validación cruzada (5 particiones estratificadas, solo sobre el conjunto de entrenamiento)**
+
+| Modelo | Recall | Precisión | F1 | ROC-AUC |
+| :--- | :---: | :---: | :---: | :---: |
+| Regresión Logística | 0.814 ± 0.048 | 0.464 ± 0.021 | 0.591 ± 0.024 | 0.890 ± 0.013 |
+| **XGBoost** | **0.856 ± 0.044** | **0.649 ± 0.012** | **0.738 ± 0.023** | **0.947 ± 0.011** |
+
+**Selección del modelo.** Se eligió **XGBoost** con el criterio de mayor *Recall* medio en validación cruzada (desempate por ROC-AUC medio), de modo que el conjunto de prueba solo interviene en el reporte final. Las bandas de riesgo (Bajo < 0.40 ≤ Medio < 0.70 ≤ Alto) y el umbral de decisión de 0.50 son heurísticos: no son probabilidades calibradas.
+
+**Variables más influyentes.** En XGBoost pesan más `Tenure` (0.163), `Complain` (0.069), `PreferedOrderCat_Laptop & Accessory` (0.059), `MaritalStatus_Single` (0.052) y `SatisfactionScore` (0.046). En la regresión logística, por magnitud del coeficiente, destacan `PreferedOrderCat_Others`, `PreferedOrderCat_Laptop & Accessory`, `Tenure` y `CashbackAmount`. La recencia (`DaySinceLastOrder`) ocupa el 8.º lugar en XGBoost.
+
+![Importancia de variables](../reports/figures/feature_importance.png)
+
+> **Consistencia con el notebook 02.** En `02_modelado_predictivo.ipynb` XGBoost obtuvo Recall 90.00 %, ROC-AUC 95.52 %, Precisión 64.53 % y F1 75.16 % (171 TP, 19 FN, 94 FP, 842 TN), y la regresión logística prácticamente las mismas cifras de arriba. La diferencia se debe a que allí la mediana se calculó antes de dividir los datos (fuga leve, ver sección 5.1) y a las versiones de las librerías. Las cifras de esta sección son las vigentes.
+
+**Alcances y limitaciones.** El Recall en validación cruzada (85.6 % ± 4.4) es menor que el observado en prueba (90.5 %), por lo que este último podría ser algo optimista. Se usó una única partición de prueba, sin ajuste de hiperparámetros ni calibración del umbral, y el modelo se entrenó con el 80 % de los clientes. Al ser una muestra piloto, debe validarse con datos reales antes de usarse en producción.
+
+### 10.5 Segmentación de Clientes
+
+Además de predecir el abandono, se agrupó a los clientes por comportamiento con **K-Means** sobre cuatro variables (`Tenure`, `DaySinceLastOrder`, `OrderCount` y `CashbackAmount`; imputadas por mediana y estandarizadas). La segmentación **no utiliza la etiqueta `Churn`**: la tasa de abandono real se calcula después, solo para interpretar cada grupo. El número de segmentos se eligió entre $k = 3$ y $k = 6$ con el coeficiente de silueta (0.374, 0.333, 0.318 y 0.330, respectivamente), resultando **k = 3**.
+
+| Segmento | Clientes | Churn real | Perfil respecto al promedio |
+| :---: | :---: | :---: | :--- |
+| 0 | 3.480 | 22.13 % | Clientes recientes con pocas órdenes: antigüedad −42 %, órdenes −40 %, menos días sin comprar (−32 %) |
+| 1 | 1.236 | 3.56 % | Clientes muy antiguos con alto cashback: antigüedad +105 %, cashback +28 % |
+| 2 | 914 | 14.66 % | Compradores frecuentes con mayor inactividad reciente: órdenes +183 %, días sin comprar +94 % |
+
+![Segmentos de clientes](../reports/figures/segments.png)
+
+**Lectura.** Los clientes recientes (segmento 0) concentran la mayor tasa de abandono (22.1 %), seis veces la de los clientes antiguos y leales (3.6 %), lo que respalda la recomendación de reforzar los primeros meses del cliente (sección 11.2). El segmento 2 reúne a quienes más compran pero llevan más días sin hacerlo: es un grupo candidato a campañas de reactivación. La segmentación describe perfiles; no sustituye la predicción individual del modelo.
+
 ---
 
 ## 11. Conclusiones
 
 ### 11.1 Viabilidad Técnica y Aporte Metodológico
-1. **Factibilidad del modelado predictivo:** La propuesta metodológica confirma que es técnicamente viable anticipar el abandono de clientes en comercio digital combinando un modelo lineal explicativo (Regresión Logística) con un ensamble no lineal robusto (XGBoost).
+1. **Factibilidad del modelado predictivo:** La propuesta metodológica confirma que es técnicamente viable anticipar el abandono de clientes en comercio digital combinando un modelo lineal explicativo (Regresión Logística) con un ensamble no lineal robusto (XGBoost). En la muestra de prueba, XGBoost detectó a 172 de los 190 clientes que abandonaron (Recall 90.53 %, ROC-AUC 95.65 %), cumpliendo todas las metas planteadas (sección 10.4).
 2. **Tratamiento del desbalance:** La incorporación de funciones de pérdida ponderadas permite abordar el desbalance de clases inherente al comercio electrónico sin sesgar las predicciones hacia la clase mayoritaria.
-3. **Aislamiento experimental:** El pipeline de preprocesamiento estructurado por capas garantiza una evaluación rigurosa y libre de contaminación (*data leakage*).
+3. **Aislamiento experimental:** El pipeline reproducible ajusta imputación, escalado y codificación solo con los datos de entrenamiento, lo que garantiza una evaluación libre de contaminación (*data leakage*); el modelo se selecciona con validación cruzada y el conjunto de prueba se reserva para el reporte final.
+4. **Valor adicional de la segmentación:** Agrupar a los clientes por antigüedad, recencia, frecuencia y gasto produce tres perfiles con tasas de abandono muy distintas (3.6 %, 14.7 % y 22.1 %), útiles para diseñar campañas diferenciadas (sección 10.5).
 
 ### 11.2 Recomendaciones para la Toma de Decisiones
 A partir del análisis del comportamiento del cliente, se derivan tres lineamientos estratégicos:
-1. **Foco en clientes de reciente ingreso:** La antigüedad suele actuar como un factor protector clave; por ello, los esfuerzos de acompañamiento y fidelización deben concentrarse en los primeros meses del comprador.
-2. **Atención prioritaria a quejas:** Las incidencias con soporte representan uno de los principales aceleradores de la fuga. Se recomienda que los clientes que registren reclamos reciban seguimiento prioritario antes de que decidan abandonar la tienda.
-3. **Gestión analítica de la recencia:** Monitorear el incremento anormal en los días transcurridos desde la última compra para identificar oportunamente a los clientes que comienzan a mostrar signos de inactividad.
+1. **Foco en clientes de reciente ingreso:** La antigüedad suele actuar como un factor protector clave; por ello, los esfuerzos de acompañamiento y fidelización deben concentrarse en los primeros meses del comprador. La evidencia lo respalda: `Tenure` es la variable más influyente en XGBoost y el segmento de clientes recientes presenta el mayor abandono (22.1 %).
+2. **Atención prioritaria a quejas:** Las incidencias con soporte representan uno de los principales aceleradores de la fuga. Se recomienda que los clientes que registren reclamos reciban seguimiento prioritario antes de que decidan abandonar la tienda. `Complain` es la segunda variable más influyente en XGBoost.
+3. **Gestión analítica de la recencia:** Monitorear el incremento anormal en los días transcurridos desde la última compra para identificar oportunamente a los clientes que comienzan a mostrar signos de inactividad. En el modelo la recencia pesa menos que la antigüedad y las quejas (8.º lugar en XGBoost), por lo que conviene usarla como señal complementaria, por ejemplo para reactivar al segmento de compradores frecuentes con mayor inactividad (sección 10.5).
 
 ### 11.3 Escalamiento del Análisis
 * **Muestra de prueba como base:** Los datos de prueba de aproximadamente 5.600 clientes sirve para validar la metodología y afinar los algoritmos localmente.
