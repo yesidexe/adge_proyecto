@@ -1,0 +1,179 @@
+{
+  "selected_model": "XGBoost",
+  "selection_rule": "mayor Recall medio en validación cruzada (desempate por ROC-AUC medio); el conjunto de prueba se reserva para el reporte final",
+  "test": {
+    "Regresion Logistica": {
+      "accuracy": 0.7921847246891652,
+      "recall": 0.8473684210526315,
+      "precision": 0.43989071038251365,
+      "f1": 0.579136690647482,
+      "roc_auc": 0.8851045883940621,
+      "tp": 161,
+      "fn": 29,
+      "fp": 205,
+      "tn": 731
+    },
+    "XGBoost": {
+      "accuracy": 0.8978685612788633,
+      "recall": 0.9052631578947369,
+      "precision": 0.6394052044609665,
+      "f1": 0.7494553376906318,
+      "roc_auc": 0.9564664867296446,
+      "tp": 172,
+      "fn": 18,
+      "fp": 97,
+      "tn": 839
+    }
+  },
+  "cv": {
+    "Regresion Logistica": {
+      "recall_mean": 0.8140379923318231,
+      "recall_std": 0.0475670299519806,
+      "precision_mean": 0.46424148394613746,
+      "precision_std": 0.021253699493103496,
+      "f1_mean": 0.5906775781136753,
+      "f1_std": 0.02402883168555643,
+      "roc_auc_mean": 0.8904761174769567,
+      "roc_auc_std": 0.01328148439593933
+    },
+    "XGBoost": {
+      "recall_mean": 0.8562565353781805,
+      "recall_std": 0.04440072982197279,
+      "precision_mean": 0.6487414187121383,
+      "precision_std": 0.012198139118625845,
+      "f1_mean": 0.7379037628936108,
+      "f1_std": 0.02347360754000736,
+      "roc_auc_mean": 0.9466769592173787,
+      "roc_auc_std": 0.01072514228823576
+    }
+  },
+  "top_features": {
+    "Regresion Logistica": [
+      [
+        "PreferedOrderCat_Others",
+        2.281560697865912
+      ],
+      [
+        "PreferedOrderCat_Laptop & Accessory",
+        1.8762771576143151
+      ],
+      [
+        "Tenure",
+        1.5207611078014005
+      ],
+      [
+        "CashbackAmount",
+        0.9771487871473348
+      ],
+      [
+        "PreferedOrderCat_Mobile Phone",
+        0.9666657875130171
+      ],
+      [
+        "Complain",
+        0.7205530703392776
+      ],
+      [
+        "NumberOfAddress",
+        0.5969726301090402
+      ],
+      [
+        "MaritalStatus_Single",
+        0.5339841938568015
+      ],
+      [
+        "PreferredPaymentMode_Cash on Delivery",
+        0.46041309265691194
+      ],
+      [
+        "DaySinceLastOrder",
+        0.4152524764876354
+      ]
+    ],
+    "XGBoost": [
+      [
+        "Tenure",
+        0.16314153373241425
+      ],
+      [
+        "Complain",
+        0.06852229684591293
+      ],
+      [
+        "PreferedOrderCat_Laptop & Accessory",
+        0.05884566158056259
+      ],
+      [
+        "MaritalStatus_Single",
+        0.05201471596956253
+      ],
+      [
+        "SatisfactionScore",
+        0.04640902206301689
+      ],
+      [
+        "CashbackAmount",
+        0.04575219377875328
+      ],
+      [
+        "CityTier",
+        0.04376070573925972
+      ],
+      [
+        "DaySinceLastOrder",
+        0.04063628986477852
+      ],
+      [
+        "PreferedOrderCat_Fashion",
+        0.03906954452395439
+      ],
+      [
+        "PreferredPaymentMode_Credit Card",
+        0.036561667919158936
+      ]
+    ]
+  },
+  "segmentation": {
+    "k": 3,
+    "silhouette_by_k": {
+      "3": 0.3739352485326886,
+      "4": 0.33257905602973725,
+      "5": 0.31811790803913653,
+      "6": 0.3303317119540865
+    },
+    "descriptions": {
+      "0": "antigüedad menor (-42%), días sin comprar menor (-32%), órdenes menor (-40%)",
+      "1": "antigüedad mayor (+105%), días sin comprar mayor (+21%), órdenes menor (-23%), cashback mayor (+28%)",
+      "2": "antigüedad mayor (+17%), días sin comprar mayor (+94%), órdenes mayor (+183%)"
+    },
+    "profile": [
+      {
+        "segmento": 0,
+        "clientes": 3480,
+        "tasa_churn": 0.2213,
+        "Tenure": 5.84,
+        "DaySinceLastOrder": 3.12,
+        "OrderCount": 1.79,
+        "CashbackAmount": 154.21
+      },
+      {
+        "segmento": 1,
+        "clientes": 1236,
+        "tasa_churn": 0.0356,
+        "Tenure": 20.45,
+        "DaySinceLastOrder": 5.58,
+        "OrderCount": 2.3,
+        "CashbackAmount": 227.3
+      },
+      {
+        "segmento": 2,
+        "clientes": 914,
+        "tasa_churn": 0.1466,
+        "Tenure": 11.65,
+        "DaySinceLastOrder": 8.92,
+        "OrderCount": 8.42,
+        "CashbackAmount": 197.13
+      }
+    ]
+  }
+}
